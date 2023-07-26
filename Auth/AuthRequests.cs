@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using ToDoMinimalAPI.DTOs;
 
 namespace ToDoMinimalAPI.Auth
@@ -12,19 +13,31 @@ namespace ToDoMinimalAPI.Auth
         }
 
         public static IResult Login(IAuthService authService,
-                                   [FromBody] LoginDto loginDto)
+                                   [FromBody] LoginDto loginDto,
+                                   IValidator<LoginDto> validator)
         {
+            var result = validator.Validate(loginDto);
+            if (!result.IsValid)
+            {
+                return Results.BadRequest(result.Errors);
+            }
             var token = authService.Login(loginDto);
             if (token is null)
             {
-                return Results.BadRequest();
+                return Results.BadRequest("Bad login or password");
             }
             return Results.Ok(token);
         }
 
         public static IResult SignUp(IAuthService authService,
-                                     [FromBody] SignUpDto signUpDto)
+                                     [FromBody] SignUpDto signUpDto,
+                                     IValidator<SignUpDto> validator)
         {
+            var result = validator.Validate(signUpDto);
+            if (!result.IsValid)
+            {
+                return Results.BadRequest(result.Errors);
+            }
             var id = authService.SignUp(signUpDto);
             return Results.Created($"/user/{id}", id);
         }

@@ -1,8 +1,10 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDoMinimalAPI.Auth;
 using ToDoMinimalAPI.Context;
+using ToDoMinimalAPI.DTOs;
 using ToDoMinimalAPI.ToDo;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(SignUpDto));
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginDto));
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(config =>

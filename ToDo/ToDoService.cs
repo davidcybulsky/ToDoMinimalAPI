@@ -76,8 +76,7 @@ namespace ToDoMinimalAPI.ToDo
             {
                 Name = createToDoDto.Name,
                 Description = createToDoDto.Description,
-                IsCompleted = createToDoDto.IsCompleted,
-                UserId = (int)_userContextService.GetUserId,
+                UserId = (int)_userContextService.GetUserId
             };
 
             _db.ToDos.Add(todo);
