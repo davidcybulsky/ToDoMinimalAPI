@@ -39,7 +39,8 @@ namespace ToDoMinimalAPI.Auth
                 claims: claims,
                 signingCredentials: cred,
                 issuer: _authSettings.Issuer,
-                audience: _authSettings.Audience
+                audience: _authSettings.Audience,
+                expires: DateTime.UtcNow.AddDays(90)
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
