@@ -13,7 +13,7 @@ namespace ToDoMinimalAPI.ToDo
                 .RequireAuthorization();
             app.MapPost("/todo", ToDoRequests.Post)
                 .RequireAuthorization();
-            app.MapPut("/todo{id}", ToDoRequests.Put)
+            app.MapPut("/todo/{id}", ToDoRequests.Put)
                 .RequireAuthorization();
             app.MapDelete("/todo/{id}", ToDoRequests.Delete)
                 .RequireAuthorization();
