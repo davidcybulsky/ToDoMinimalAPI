@@ -5,6 +5,7 @@ using System.Text;
 using ToDoMinimalAPI.Auth;
 using ToDoMinimalAPI.Context;
 using ToDoMinimalAPI.DTOs;
+using ToDoMinimalAPI.Middleware;
 using ToDoMinimalAPI.ToDo;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(SignUpDto));
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginDto));
+builder.Services.AddScoped<ErrorHandling>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(config =>
@@ -43,6 +45,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddCors();
 
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,13 +58,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().WithOrigins(config["Cors:Client"]));
 
-app.UseHttpsRedirection();
+app.UseMiddleware<ErrorHandling>();
 
-AuthRequests.RegisterEndpoints(app);
-ToDoRequests.RegisterEndpoints(app);
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
